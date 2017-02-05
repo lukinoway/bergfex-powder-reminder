@@ -15,19 +15,21 @@ def connect():
         print "connected to DB"
 
 
-def import_data(date, resort, tmin, tmax, snow, rain, rain_chance):
+def import_weather(date, resort, tmin, tmax, snow, rain, rain_chance, sun, region, country):
     if conn:
-        stmt = """INSERT INTO weather_entries(date_info, resort, tmin, tmax, snow, rain, rain_chance, creation_dt) VALUES('"""+date+"""', '"""+resort+"""', '"""+tmin+"""', '"""+tmax+"""', '"""+snow+"""', '"""+rain+"""', '"""+rain_chance+"""', NOW())"""
+        stmt = "INSERT INTO weather_entries(date_info, resort, tmin, tmax, snow, rain, rain_chance, sun, region, country, creation_dt) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,NOW());"
         try:
             cur = conn.cursor()
-            cur.execute(stmt)
+            cur.execute(stmt, (date, resort, tmin, tmax, snow, rain, rain_chance, sun, region, country))
 
             conn.commit()
+	    print "stored entry" 
 
         except psycopg2.Error as e:
-            print "error occured while importing data"
+            print "error occured while importing weather"
             print e.pgcode
             print e.pgerror
+	    print e
     else:
         print "seems that there is no connection"
 
