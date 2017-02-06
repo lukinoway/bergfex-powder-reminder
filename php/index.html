@@ -1,0 +1,24 @@
+<html>
+<head>
+  <script type="text/javascript" src="lib/canvasjs.min.js"></script>
+  <script type="text/javascript">
+      window.onload = function () {
+          var chart = new CanvasJS.Chart("chartContainer", {          
+		data: [
+              {
+                  type: "line",
+		  dataPoints: 
+[{"label":"2017-02-06","y":27},{"label":"2017-02-07","y":0},{"label":"2017-02-08","y":0},{"label":"2017-02-09","y":0},{"label":"2017-02-10","y":0},{"label":"2017-02-11","y":0}]
+}
+              ]
+          });
+ 
+          chart.render();
+      }
+  </script>
+</head>
+ 
+<body>
+  <div id="chartContainer" style="height: 500px; width: 50%;"></div>
+</body>
+</html>
