@@ -40,12 +40,13 @@ def get_data(resort, region, country):
 
 
 		snow = day.find('div', class_='nschnee')
-		print "Neuschnee: " + snow.text.strip()
 		    
 		intSnow = 0
-
-		if snow.text.strip() != "-":
-			intSnow = get_int(snow.text.strip())
+		
+		if snow:
+			print "Neuschnee: " + snow.text.strip()
+			if snow.text.strip() != "-":
+				intSnow = get_int(snow.text.strip())
 
 
 		rain = day.find('div', class_='rrr')
@@ -76,3 +77,24 @@ def get_data(resort, region, country):
 
 	print "finished import"
 
+
+def snow_height(resort):
+	link = "http://www.bergfex.at/" + resort + "/schneebericht/"
+
+	#print "URL: " + link
+	soup = BeautifulSoup(urllib.urlopen(link), 'html.parser')
+	#print soup
+	block = soup.find('dl', class_='dl-horizontal dt-large')
+	#print block
+
+	#print "------ info"
+	#for info in block.findAll('dt', class_='big'):
+		#print info.text.strip()
+
+
+	#print "------- info val"
+	if block:
+		for info_val in block.findAll('dd', class_='big'):
+			new_snow = info_val.find('div')
+			if new_snow:
+				print "snow_update: " +  resort + " " + new_snow.text.strip();

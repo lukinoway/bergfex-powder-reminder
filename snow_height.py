@@ -1,7 +1,7 @@
 import urllib
 from bs4 import BeautifulSoup
 
-resort = "kitzsteinhorn-kaprun"
+resort = "weinebene"
 link = "http://www.bergfex.at/" + resort + "/schneebericht/"
 
 print "URL: " + link
@@ -19,6 +19,6 @@ print "------- info val"
 for info_val in block.findAll('dd', class_='big'):
 	new_snow = info_val.find('div')
 	if new_snow:
-		print new_snow.text.strip();
+		print resort + " : " + new_snow.text.strip();
 
-	print info_val.text.strip()
+	#print info_val.text.strip()

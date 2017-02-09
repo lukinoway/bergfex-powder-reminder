@@ -53,6 +53,6 @@ pg_close();
 </head>
  
 <body>
-  <div id="chartContainer" style="height: 500px; width: 100%;"></div>
+  <div id="chartContainer" style="height: 100%; width: 100%;"></div>
 </body>
 </html>
