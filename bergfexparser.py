@@ -25,7 +25,7 @@ def get_data(resort, region, country):
 
 	soup = BeautifulSoup(urllib.urlopen(link), 'html.parser')
 
-	for day in soup.findAll('div', class_=['day clickable selectable fields']):
+	for day in soup.findAll('div', class_=['day']):
 		print "------------------"
 
 		print day['title']
@@ -46,7 +46,18 @@ def get_data(resort, region, country):
 		if snow:
 			print "Neuschnee: " + snow.text.strip()
 			if snow.text.strip() != "-":
-				intSnow = get_int(snow.text.strip())
+				snowstr = snow.text.strip()
+				# add check for range
+				if snowstr.find("-") == -1:
+					intSnow = get_int(snowstr)
+				else:
+					print "seems there is a range in snow forecast"
+					minsnow = snowstr.split("-")[0]
+					maxsnow = snowstr.split("-")[1]
+					print "min: " + minsnow
+					print "max: " + maxsnow
+					intSnow = (get_int(minsnow) + get_int(maxsnow)) / 2
+					print "avg: " + str(intSnow)
 
 
 		rain = day.find('div', class_='rrr')

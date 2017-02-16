@@ -33,7 +33,7 @@ tr:nth-child(even) {
   
   <div data-role="main" class="ui-content">
     <form>
-      <input id="filterTable-input" data-type="search" placeholder="Search For Customers...">
+      <input id="filterTable-input" data-type="search" placeholder="Search For Resort">
     </form>
     <table data-role="table" data-mode="columntoggle" class="ui-responsive ui-shadow" id="myTable" data-filter="true" data-input="#filterTable-input">
 <thead align="left" style="display: table-header-group">
@@ -49,7 +49,7 @@ $query = "
 select resort, region, sum(snow) as total_snow
   from weather_entries we1 
  where creation_dt IN ( select max(creation_dt) from weather_entries we2 where we2.resort = we1.resort and we2.date_info = we1.date_info)
-      and date_info between date(NOW()) and date(now())+3 
+      and date_info >= date(NOW()) 
 group by resort, region
  order by total_snow desc";
 
