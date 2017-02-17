@@ -39,8 +39,8 @@ tr:nth-child(even) {
 <thead align="left" style="display: table-header-group">
 <tr>
 	<th data-priority="1">Resort</th>
-	<th data-priority="2">Region</th>
-	<th data-priority="3">Snow</th>
+	<th data-priority="6">Region</th>
+	<th data-priority="1">Snow [cm]</th>
 </tr>
 </thead>
 <tbody>
