@@ -12,7 +12,7 @@ $resort = htmlspecialchars($_GET["resort"]);
 		},              
 		data: [
               {
-                  type: "line",
+                  type: "splineArea",
 		  dataPoints: 
 <?php
 
@@ -25,12 +25,17 @@ $con = pg_connect ("host=$host dbname=$db user=$user password=$pass")
 	or die ("couldn't connect to server");
 
 $query = "
-select date_info, snow
-  from weather_entries we1 
- where creation_dt IN ( select max(creation_dt) from weather_entries we2 where we2.resort = we1.resort and we2.date_info = we1.date_info)
-   and date_info >= date(now())
-   and resort = $1
- order by date_info asc ";
+with resort_date as (
+        select resort, region, date_info, max(id) as id 
+          from weather_entries 
+         where date_info >= date(now())
+           and resort = $1 
+         group by resort, region, date_info
+)
+select rd.date_info, we.snow 
+  from weather_entries we
+  inner join resort_date rd on rd.id = we.id
+  order by rd.date_info asc";
 
 $rs = pg_prepare($con, "resort_snow", $query) or die ("cannot execute query");
 $rs = pg_execute($con, "resort_snow", array($resort));

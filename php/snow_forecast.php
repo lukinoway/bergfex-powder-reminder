@@ -46,12 +46,19 @@ tr:nth-child(even) {
 <tbody>
 <?php
 $query = "
-select resort, region, sum(snow) as total_snow
-  from weather_entries we1 
- where creation_dt IN ( select max(creation_dt) from weather_entries we2 where we2.resort = we1.resort and we2.date_info = we1.date_info)
-      and date_info >= date(NOW()) 
-group by resort, region
- order by total_snow desc";
+with resort_date as (
+	select resort, region, date_info, max(id) as id 
+	  from weather_entries 
+	 where date_info >= date(now())
+	   --and resort like 'kitzsteinhorn-kaprun' 
+	 group by resort, region, date_info
+ )
+ select rd.resort, rd.region, sum(w1.snow) as total_snow 
+   from weather_entries w1
+   inner join resort_date rd on rd.id = w1.id 
+  group by rd.resort, rd.region
+  order by total_snow desc;
+";
 
 $rs = pg_query($con, $query) or die ("cannot execute query");
 
