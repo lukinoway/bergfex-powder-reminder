@@ -23,13 +23,47 @@ def import_weather(date, resort, tmin, tmax, snow, rain, rain_chance, sun, regio
             cur.execute(stmt, (date, resort, tmin, tmax, snow, rain, rain_chance, sun, region, country))
 
             conn.commit()
-	    print "stored entry" 
+	    print "stored entry"
 
         except psycopg2.Error as e:
             print "error occured while importing weather"
             print e.pgcode
             print e.pgerror
 	    print e
+    else:
+        print "seems that there is no connection"
+
+
+def load_top_10():
+    if conn:
+        stmt = """\
+            with resort_date as (
+            	select resort, region, date_info, max(id) as id
+            	  from weather_entries
+            	 where date_info >= date(now())
+            	   --and resort like 'kitzsteinhorn-kaprun'
+            	 group by resort, region, date_info
+             )
+             select rd.resort, rd.region, sum(w1.snow) as total_snow
+               from weather_entries w1
+               inner join resort_date rd on rd.id = w1.id
+              group by rd.resort, rd.region
+             having sum(snow) > 30
+              order by total_snow desc
+              LIMIT 10;"""
+
+        try:
+            cur = conn.cursor()
+            cur.execute(stmt)
+            conn.commit()
+            print "got data"
+            return cur.fetchall()
+
+        except psycopg2.Error as e:
+            print "error occured while importing weather"
+            print e.pgcode
+            print e.pgerror
+            print e
     else:
         print "seems that there is no connection"
 

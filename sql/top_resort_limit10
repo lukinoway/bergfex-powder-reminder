@@ -1,0 +1,15 @@
+﻿-- top 10 resorts with more than 30cm
+with resort_date as (
+	select resort, region, date_info, max(id) as id 
+	  from weather_entries 
+	 where date_info >= date(now())
+	   --and resort like 'kitzsteinhorn-kaprun' 
+	 group by resort, region, date_info
+ )
+ select rd.resort, rd.region, sum(w1.snow) as total_snow 
+   from weather_entries w1
+   inner join resort_date rd on rd.id = w1.id 
+  group by rd.resort, rd.region
+ having sum(snow) > 30
+  order by total_snow desc
+  LIMIT 10;
