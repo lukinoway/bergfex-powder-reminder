@@ -9,6 +9,8 @@ import bergfexparser
 import urllib
 from bs4 import BeautifulSoup
 from datetime import datetime
+import sys
+
 
 # function to load resorts for region
 def load_resort_for_region(region, country):
@@ -28,6 +30,10 @@ def load_resort_for_region(region, country):
 # main part
 start = datetime.now()
 print "start bergfex parser"
+
+# set string formating to UTF
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 country = "oesterreich"
 region_array = ["tirol","steiermark", "salzburg", "kaernten", "oberoesterreich", "niederoesterreich", "vorarlberg"]
