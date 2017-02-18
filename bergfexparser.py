@@ -40,9 +40,9 @@ def get_data(resort, region, country):
 
 
 		snow = day.find('div', class_='nschnee')
-		    
+
 		intSnow = 0
-		
+
 		if snow:
 			print "Neuschnee: " + snow.text.strip()
 			if snow.text.strip() != "-":
@@ -62,7 +62,7 @@ def get_data(resort, region, country):
 
 		rain = day.find('div', class_='rrr')
 		print "Niederschlag: " + rain.text.strip()
-		    
+
 		floatRain = 0
 		if rain.text.strip() != "-":
 			floatRain = get_float(rain.text.strip().replace(",", "."))
@@ -82,30 +82,49 @@ def get_data(resort, region, country):
 
 		intTmin = get_int(tmin.text)
 		intTmax = get_int(tmax.text)
-		    
-		    
+
+
 		db_connector.import_weather(date_info, resort, intTmin, intTmax, intSnow, floatRain, intRP, intSun, region, country)
 
 	print "finished import"
 
 
-def snow_height(resort):
-	link = "http://www.bergfex.at/" + resort + "/schneebericht/"
+def snow_height(resort, region, country):
+    link = "http://www.bergfex.at/" + resort + "/schneebericht/"
 
-	#print "URL: " + link
-	soup = BeautifulSoup(urllib.urlopen(link), 'html.parser')
-	#print soup
-	block = soup.find('dl', class_='dl-horizontal dt-large')
-	#print block
+    print "URL: " + link
+    soup = BeautifulSoup(urllib.urlopen(link), 'html.parser')
+    block = soup.find('dl', class_='dl-horizontal dt-large')
+    #print block
 
-	#print "------ info"
-	#for info in block.findAll('dt', class_='big'):
-		#print info.text.strip()
+    if block:
+        snowvalues = []
+        for info_val in block.findAll('dd', class_='big'):
+            #print info_val
 
+            intSnow = 0
 
-	#print "------- info val"
-	if block:
-		for info_val in block.findAll('dd', class_='big'):
-			new_snow = info_val.find('div')
-			if new_snow:
-				print "snow_update: " +  resort + " " + new_snow.text.strip();
+            snowstr = info_val.text.strip()
+            if snowstr != "-":
+                snowval = snowstr.split("cm")[0]
+                if snowval:
+                    intSnow = get_int(snowval)
+                #print intSnow
+
+            # check for snow updates
+            new_snow = info_val.find('div')
+            intSnowChange = 0
+            if new_snow:
+                print "snow_update: " +  resort + " " + new_snow.text.strip();
+                intSnowChange = get_int(new_snow.text.strip())
+                #print intSnowChange
+
+            # fill array
+            snowvalues.append(intSnow)
+            snowvalues.append(intSnowChange)
+
+        print snowvalues
+        if len(snowvalues) > 2:
+            db_connector.import_snow_full(resort, region, country, snowvalues)
+        if len(snowvalues) == 2:
+            db_connector.import_snow_berg(resort, region, country, snowvalues)

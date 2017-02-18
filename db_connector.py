@@ -67,6 +67,43 @@ def load_top_10():
     else:
         print "seems that there is no connection"
 
+def import_snow_full(resort, region, country,
+                snowValues):
+    if conn:
+        stmt = "INSERT INTO snow_entries(resort, region, country, snow_berg, snow_berg_change, snow_tal, snow_tal_change, date_info , creation_dt) VALUES(%s,%s,%s,%s,%s,%s,%s,date(now()),NOW());"
+        try:
+            cur = conn.cursor()
+            cur.execute(stmt, (resort, region, country, snowValues[0], snowValues[1], snowValues[2], snowValues[3]))
+
+            conn.commit()
+	    print "stored entry"
+
+        except psycopg2.Error as e:
+            print "error occured while importing snow entry"
+            print e.pgcode
+            print e.pgerror
+	    print e
+    else:
+        print "seems that there is no connection"
+
+def import_snow_berg(resort, region, country,
+                snowValues):
+    if conn:
+        stmt = "INSERT INTO snow_entries(resort, region, country, snow_berg, snow_berg_change, snow_tal, snow_tal_change, date_info , creation_dt) VALUES(%s,%s,%s,%s,%s,0,0,date(now()),NOW());"
+        try:
+            cur = conn.cursor()
+            cur.execute(stmt, (resort, region, country, snowValues[0], snowValues[1]))
+
+            conn.commit()
+	    print "stored entry"
+
+        except psycopg2.Error as e:
+            print "error occured while importing snow entry"
+            print e.pgcode
+            print e.pgerror
+	    print e
+    else:
+        print "seems that there is no connection"
 
 def close():
     if conn:
