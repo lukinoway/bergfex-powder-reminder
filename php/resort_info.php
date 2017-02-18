@@ -44,6 +44,7 @@ tr:nth-child(even) {
   </div>
   <div data-role="footer">
 	  <a href="#pagetwo">Check Snow Heights</a>
+	  <a href="http://www.bergfex.at/<?php echo $resort; ?>" target="_blank">Bergfex Info</a>
   </div>
 </div>
 
@@ -57,6 +58,7 @@ tr:nth-child(even) {
   </div>
   <div data-role="footer">
 	  <a href="#pageone">Check Snow Forecast</a>
+	  <a href="http://www.bergfex.at/<?php echo $resort; ?>" target="_blank">Bergfex Info</a>
   </div>
 </div>
 </body>
