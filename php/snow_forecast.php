@@ -30,7 +30,7 @@ tr:nth-child(even) {
   <div data-role="header">
     <h1>snow forecast</h1>
   </div>
-  
+
   <div data-role="main" class="ui-content">
     <form>
       <input id="filterTable-input" data-type="search" placeholder="Search For Resort">
@@ -47,46 +47,46 @@ tr:nth-child(even) {
 <?php
 $query = "
 with resort_date as (
-	select resort, region, date_info, max(id) as id 
-	  from weather_entries 
+	select resort, region, date_info, max(id) as id
+	  from weather_entries
 	 where date_info >= date(now())
-	   --and resort like 'kitzsteinhorn-kaprun' 
+	   --and resort like 'kitzsteinhorn-kaprun'
 	 group by resort, region, date_info
  )
- select rd.resort, rd.region, sum(w1.snow) as total_snow 
+ select rd.resort, rd.region, sum(w1.snow) as total_snow
    from weather_entries w1
-   inner join resort_date rd on rd.id = w1.id 
+   inner join resort_date rd on rd.id = w1.id
   group by rd.resort, rd.region
   order by total_snow desc;
 ";
 
 $rs = pg_query($con, $query) or die ("cannot execute query");
 
-while ($row = pg_fetch_object($rs) ) { 
+while ($row = pg_fetch_object($rs) ) {
 ?>
-<tr class="item_row">	
-	<td><a href="resort_snow_changes.php?resort=<?php echo $row->resort; ?>" target="_blank"><?php echo $row->resort; ?></a></td>
+<tr class="item_row">
+	<td><a href="resort_info.php?resort=<?php echo $row->resort; ?>" target="_blank"><?php echo $row->resort; ?></a></td>
 	<td><?php echo $row->region; ?></td>
 	<td><?php echo $row->total_snow; ?></td>
-</tr>	
-<?php 
+</tr>
+<?php
 }
 ?>
 </tbody>
 </table>
 </div>
   <div data-role="footer">
-    <h1>last update 
+    <h1>last update
 <?php
 $query1 = "select max(creation_dt) as update_dt from weather_entries";
 $rs1 = pg_query($con, $query1) or die ("cannot execute query");
-while ($row1 = pg_fetch_object($rs1) ) { 
+while ($row1 = pg_fetch_object($rs1) ) {
 echo $row1->update_dt;
 }
 ?>
     </h1>
   </div>
-</div> 
+</div>
 </body>
 <?php
 pg_close();
