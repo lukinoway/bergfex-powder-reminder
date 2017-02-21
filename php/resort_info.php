@@ -1,6 +1,20 @@
 <?php
-$resort = htmlspecialchars($_GET["resort"]);
 include 'chart_data.php';
+
+$resort = htmlspecialchars($_GET["resort"]);
+
+// default values (today and today + 10days)
+$from = date('d-m-Y');
+$to = date('d-m-Y', mktime(0, 0, 0, date("m")  , date("d")+10, date("Y")));
+
+
+// check if parameters are set
+if (isset($_GET['from'])) {
+    $from = htmlspecialchars($_GET["from"]);
+}
+if (isset($_GET['to'])) {
+    $to = htmlspecialchars($_GET["to"]);
+}
 ?>
 
 <html>
@@ -13,11 +27,11 @@ include 'chart_data.php';
 <script type="text/javascript">
 	window.onload = function () {
 		var snowHeight = new CanvasJS.Chart("snowHeightChart", {
-		  data: [ <?php echo get_snow_height($resort); ?> ]
+		  data: [ <?php echo get_snow_height($resort, $from, $to); ?> ]
 	  	});
 		snowHeight.render();
 		var snowForecast = new CanvasJS.Chart("snowForecastChart", {
-		  data: [ <?php echo get_snow_forecast($resort); ?> ]
+		  data: [ <?php echo get_snow_forecast($resort, $from, $to); ?> ]
 	  	});
 		snowForecast.render();
 	}

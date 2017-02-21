@@ -1,12 +1,19 @@
 <?php
+include 'list_data.php';
 
-$host = "localhost";
-$user = "bergfex";
-$pass = "bergfex";
-$db = "bergfex";
+// default values (today and today + 10days)
+$from = date('d-m-Y');
+$to = date('d-m-Y', mktime(0, 0, 0, date("m")  , date("d")+10, date("Y")));
 
-$con = pg_connect ("host=$host dbname=$db user=$user password=$pass")
-	or die ("couldn't connect to server");
+
+// check if parameters are set
+if (isset($_GET['from'])) {
+    $from = htmlspecialchars($_GET["from"]);
+}
+if (isset($_GET['to'])) {
+    $to = htmlspecialchars($_GET["to"]);
+}
+
 ?>
 <html>
 <head>
@@ -45,24 +52,8 @@ tr:nth-child(even) {
 </thead>
 <tbody>
 <?php
-$query = "
-with resort_date as (
-	select resort, region, date_info, max(id) as id
-	  from weather_entries
-	 where date_info >= date(now())
-	   --and resort like 'kitzsteinhorn-kaprun'
-	 group by resort, region, date_info
- )
- select rd.resort, rd.region, sum(w1.snow) as total_snow
-   from weather_entries w1
-   inner join resort_date rd on rd.id = w1.id
-  group by rd.resort, rd.region
-  order by total_snow desc;
-";
-
-$rs = pg_query($con, $query) or die ("cannot execute query");
-
-while ($row = pg_fetch_object($rs) ) {
+	$rs = get_snow_list($from, $to);
+	while ($row = pg_fetch_object($rs) ) {
 ?>
 <tr class="item_row">
 	<td><a href="resort_info.php?resort=<?php echo $row->resort; ?>" target="_blank"><?php echo $row->resort; ?></a></td>

@@ -4,7 +4,7 @@ $user = "bergfex";
 $pass = "bergfex";
 $db = "bergfex";
 
-function get_snow_forecast($resort) {
+function get_snow_forecast($resort, $from, $to) {
     $host = "localhost";
     $user = "bergfex";
     $pass = "bergfex";
@@ -17,8 +17,8 @@ function get_snow_forecast($resort) {
     with resort_date as (
             select resort, region, date_info, max(id) as id
               from weather_entries
-             where date_info >= date(now())
-               and resort = $1
+             where date_info between date($1) and date($2)
+               and resort = $3
              group by resort, region, date_info
     )
     select rd.date_info, we.snow
@@ -27,7 +27,7 @@ function get_snow_forecast($resort) {
       order by rd.date_info asc";
 
     $rs = pg_prepare($con, "resort_snow", $query) or die ("cannot execute query");
-    $rs = pg_execute($con, "resort_snow", array($resort));
+    $rs = pg_execute($con, "resort_snow", array($from, $to, $resort));
 
     $myarray = array();
     while ($row = pg_fetch_row($rs)) {
@@ -40,7 +40,7 @@ function get_snow_forecast($resort) {
     return $chartdata;
 }
 
-function get_snow_height($resort) {
+function get_snow_height($resort, $from, $to) {
     $host = "localhost";
     $user = "bergfex";
     $pass = "bergfex";
@@ -54,6 +54,7 @@ function get_snow_height($resort) {
     	select resort, region, date_info, max(id) as id
     	  from snow_entries
     	 where resort = $1
+           and date_info between date($2) and date($3)
     	 group by resort, region, date_info
     )
     select sd.date_info, se.snow_berg, se.snow_tal,
@@ -63,7 +64,7 @@ function get_snow_height($resort) {
      order by sd.date_info";
 
     $rs = pg_prepare($con, "resort_snow_height", $query) or die ("cannot execute query");
-    $rs = pg_execute($con, "resort_snow_height", array($resort));
+    $rs = pg_execute($con, "resort_snow_height", array($resort, $from, $to));
 
     $myarray_berg = array();
     $myarray_tal = array();
