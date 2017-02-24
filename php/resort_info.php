@@ -25,16 +25,30 @@ if (isset($_GET['to'])) {
 <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 <script type="text/javascript" src="lib/canvasjs.min.js"></script>
 <script type="text/javascript">
-	window.onload = function () {
-		var snowHeight = new CanvasJS.Chart("snowHeightChart", {
-		  data: [ <?php echo get_snow_height($resort, $from, $to); ?> ]
-	  	});
-		snowHeight.render();
-		var snowForecast = new CanvasJS.Chart("snowForecastChart", {
-		  data: [ <?php echo get_snow_forecast($resort, $from, $to); ?> ]
-	  	});
-		snowForecast.render();
-	}
+    $(document).on("pageshow","#pageone",function(){ // When entering pagetwo
+            //alert("pageone is now shown");
+            var snowForecast = new CanvasJS.Chart("snowForecastChart", {
+              data: [ <?php echo get_snow_forecast($resort, $from, $to); ?> ]
+            });
+            snowForecast.render();
+            var sunForecast = new CanvasJS.Chart("sunForecastChart", {
+              data: [ <?php echo get_sun_forecast($resort, $from, $to); ?> ]
+            });
+            sunForecast.render();
+            var tempForecast = new CanvasJS.Chart("tempForecastChart", {
+              data: [ <?php echo get_temp_forecast($resort, $from, $to); ?> ]
+            });
+            tempForecast.render();
+    });
+
+
+    $(document).on("pageshow","#pagetwo",function(){ // When entering pagetwo
+            //alert("pagetwo is now shown");
+            var snowHeight = new CanvasJS.Chart("snowHeightChart", {
+              data: [ <?php echo get_snow_height($resort, $from, $to); ?> ]
+            });
+            snowHeight.render();
+    });
 </script>
 <style>
 th {
@@ -50,11 +64,14 @@ tr:nth-child(even) {
 
 <div data-role="page" id="pageone">
   <div data-role="header">
-    <h1><?php echo $resort; ?> snow forecast</h1>
+    <h1><?php echo $resort; ?> weather forecast</h1>
   </div>
 
   <div data-role="main" class="ui-content">
 	  <div id="snowForecastChart" style="height: 400px; width: 100%;"></div>
+      <div id="sunForecastChart" style="height: 400px; width: 100%;"></div>
+      <div id="tempForecastChart" style="height: 400px; width: 100%;"></div>
+
   </div>
   <div data-role="footer">
 	  <a href="#pagetwo">Check Snow Heights</a>
