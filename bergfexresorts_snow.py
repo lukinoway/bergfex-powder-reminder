@@ -6,7 +6,7 @@
 #import re
 import db_connector
 import bergfexparser
-import urllib
+import urllib2
 from bs4 import BeautifulSoup
 from datetime import datetime
 import sys
@@ -16,7 +16,9 @@ def load_resort_for_region(region, country):
 	link = "http://www.bergfex.at/" + region
 
 	print "get data for link " + link
-	soup = BeautifulSoup(urllib.urlopen(link), 'html.parser')
+	opener = urllib2.build_opener()
+	opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+	soup = BeautifulSoup(opener.open(link), 'html.parser')
 	resortlist = soup.find('div', class_='cols2 clearfix')
 	for resort in resortlist.findAll('a'):
 
