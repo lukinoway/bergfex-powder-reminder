@@ -67,19 +67,9 @@ tr:nth-child(even) {
 </table>
 </div>
   <div data-role="footer">
-    <h1>last update
-<?php
-$query1 = "select max(creation_dt) as update_dt from weather_entries";
-$rs1 = pg_query($con, $query1) or die ("cannot execute query");
-while ($row1 = pg_fetch_object($rs1) ) {
-echo $row1->update_dt;
-}
-?>
+    <h1>last update <?php echo get_weather_changedate(); ?>
     </h1>
   </div>
 </div>
 </body>
-<?php
-pg_close();
-?>
 </html>

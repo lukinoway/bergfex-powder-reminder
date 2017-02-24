@@ -36,4 +36,26 @@ function get_snow_list($from, $to) {
     return $rs;
 }
 
+function get_weather_changedate() {
+    $host = "localhost";
+    $user = "bergfex";
+    $pass = "bergfex";
+    $db = "bergfex";
+
+    $con = pg_connect ("host=$host dbname=$db user=$user password=$pass")
+        or die ("couldn't connect to server");
+
+    $query1 = "select max(creation_dt) as update_dt from weather_entries";
+    $rs = pg_query($con, $query1) or die ("cannot execute query");
+
+    pg_close();
+
+    $output = "";
+    while ($row1 = pg_fetch_object($rs) ) {
+        $output .= $row1->update_dt;
+    }
+
+    return $output;
+}
+
  ?>
