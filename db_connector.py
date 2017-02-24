@@ -29,7 +29,7 @@ def import_weather(date, resort, tmin, tmax, snow, rain, rain_chance, sun, regio
             print "error occured while importing weather"
             print e.pgcode
             print e.pgerror
-	    print e
+            print e
     else:
         print "seems that there is no connection"
 
