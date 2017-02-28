@@ -10,6 +10,7 @@ import urllib2
 from bs4 import BeautifulSoup
 from datetime import datetime
 import sys
+import time
 
 # function to load resorts for region
 def load_resort_for_region(region, country):
