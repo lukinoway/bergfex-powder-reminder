@@ -6,6 +6,7 @@
 #import re
 import db_connector
 import urllib2
+import time
 from bs4 import BeautifulSoup
 
 
@@ -150,19 +151,22 @@ def snow_height(resort, region, country):
 def load_resort_for_region(region, country):
     link = "http://www.bergfex.at/" + region
 
+    print "sleep for 20sek"
+    time.sleep(20)
+
     print "get data for link " + link
     opener = urllib2.build_opener()
     opener.addheaders = [('User-agent', 'Mozilla/5.0')]
     try:
-		soup = BeautifulSoup(opener.open(link), 'html.parser')
-		resortlist = soup.find('div', class_='cols2 clearfix')
-		for resort in resortlist.findAll('a'):
-
-		    resortStr = resort['href'].replace("/", "")
-		    if "http" not in resortStr:
-			print "found resort " + resortStr + " -> now load weather"
-			get_data(resortStr, region, country)
-
+        soup = BeautifulSoup(opener.open(link), 'html.parser')
+        resortlist = soup.find('div', class_='cols2 clearfix')
+        for resort in resortlist.findAll('a'):
+            resortStr = resort['href'].replace("/", "")
+            if "http" not in resortStr:
+                print "found resort " + resortStr + " -> now load weather"
+                get_data(resortStr, region, country)
+                print "sleep for 10 sek"
+                time.sleep(10)
     except urllib2.HTTPError as e:
         print "error during import"
         print e
