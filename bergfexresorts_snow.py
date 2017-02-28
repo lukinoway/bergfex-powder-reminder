@@ -26,6 +26,9 @@ def load_resort_for_region(region, country):
 	    if "http" not in resortStr:
 		print "found resort " + resortStr + " -> now load snow"
 		bergfexparser.snow_height(resortStr, region, country)
+		print "sleep 10 sek"
+		time.sleep(10)
+
 
 
 # main part

@@ -10,6 +10,7 @@ import urllib2
 from bs4 import BeautifulSoup
 from datetime import datetime
 import sys
+import time
 
 
 # function to load resorts for region
@@ -27,6 +28,8 @@ def load_resort_for_region(region, country):
 	    if "http" not in resortStr:
 		print "found resort " + resortStr + " -> now load snow"
 		bergfexparser.snow_height(resortStr, region, country)
+		print "sleep 10 sek"
+		time.sleep(10)
 
 
 # main part
